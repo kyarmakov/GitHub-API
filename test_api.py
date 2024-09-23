@@ -10,27 +10,27 @@ repo_name = os.getenv("REPO_NAME")
 api_token = os.getenv("API_TOKEN")
 
 
-def create_repository():
+def create_repository(repo, token):
     url = "https://api.github.com/user/repos"
     headers = {
-        "Authorization": f"Bearer {api_token}"
+        "Authorization": f"Bearer {token}"
     }
     data = {
-        "name": f"{repo_name}"
+        "name": f"{repo}"
     }
     requests.post(url, headers=headers, json=data)
 
 
-def get_repositories():
-    url = f"https://api.github.com/users/{username}/repos"
+def get_repositories(user):
+    url = f"https://api.github.com/users/{user}/repos"
     response = requests.get(url)
     return response.json()
 
 
-def delete_repository():
-    url = f"https://api.github.com/repos/{username}/{repo_name}"
+def delete_repository(user, repo, token):
+    url = f"https://api.github.com/repos/{user}/{repo}"
     headers = {
-        "Authorization": f"Bearer {api_token}",
+        "Authorization": f"Bearer {token}",
     }
     requests.delete(url, headers=headers)
 
@@ -45,7 +45,7 @@ def check_if_repo_exists(repos):
 
 
 def test_run():
-    create_repository()
-    repos = get_repositories()
+    create_repository(repo=repo_name, token=api_token)
+    repos = get_repositories(username)
     check_if_repo_exists(repos)
-    delete_repository()
+    delete_repository(user=username, repo=repo_name, token=api_token)
